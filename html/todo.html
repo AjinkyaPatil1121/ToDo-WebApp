@@ -1,0 +1,50 @@
+<html>
+
+	<head> 
+		<title> ToDo me this Task! </title>
+		<link rel="stylesheet" type="text/css" href="../css/todo.css">
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	</head>
+
+	<body>
+		<div class="mainPage">
+
+			<div class="taskPage">
+				
+				<div class="titleWebApp">
+					<h1> To Do </h1>
+				</div>
+				
+				<div class="titleWidgets">
+					<!--input type="button" value="Filter"-->
+					<a href="#"><img src="../img/plus-icon-27951.png" height="30px" width="30px"></a>
+				</div>
+				<br/>
+				<input type="text" placeholder="Search">
+
+				<div id="taskListView">
+					<ul id = "taskList">
+
+
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="overlayPane"></div>
+		<div class="addTaskPane">
+			<form id="addTaskForm" onsubmit="processForm()">
+				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task">
+				<br />
+				<input type="text" name="taskDesc" id="taskDesc" placeholder="Enter a description (optional)">
+				<br />
+				<input type="Submit" value="Add">
+			</form>
+		</div>	
+
+	</body>
+
+	<script type="text/javascript" src="../js/todo.js"></script>
+
+</html>
