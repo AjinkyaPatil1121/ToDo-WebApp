@@ -2,22 +2,29 @@ body {
 	margin: 0px;
 	padding: 0px;
 	background-color: pink;
+	width: 100%;
+	height:100%;
 }
 
 div.mainPage {
 	padding: 2%;
 	margin: 0 auto;
+	width:100%;
+	height: 100%;
+	position: absolute;
 }
 
 div.taskPage {
 	margin: 0 auto;
-	padding: 0 auto;
+	padding: 0px;
 	height: 80%;
 	width: 35%;
-	background-color: skyblue;
+	background-color: skyblue;/*TODO: change to an image background*/
+	position: relative;
+	/*TODO: add rounded border*/
 }
 
-div.titleWebApp {
+div.titleWebApp { /*TODO: Content fixed, no overflow*/
 	float: left;
 	height: 50px;
 	width: 50%;	
@@ -29,7 +36,7 @@ div.titleWebApp h1{
 	padding: 3px;
 }
 
-div.titleWidgets{
+div.titleWidgets{ /*TODO: decrease width for clickable area*/
 	float: left;
 	height: 50px;
 	width: 50%;
@@ -38,6 +45,46 @@ div.titleWidgets{
 div.titleWidgets a img{
 	padding-left: 70%;
 	margin-top: 8px;
+}
+
+/*TODO: search bar take up entire width*/
+
+#taskListView{
+	border:1px solid;
+	height: 80%;
+	/*width: inherit;*/
+	position: relative;
+}
+
+#taskListView ul{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+#taskListView ul li{
+	border: 1px solid red;
+	padding: 2px;
+	margin: 2px;
+	width: inherit;
+}
+
+.filterTaskContainer{
+	border:1px solid yellow;
+	height: 5%;
+	overflow: hidden;
+	position: relative;
+	text-align: justify;
+	/*width: inherit;*/
+}
+
+.filterTaskContainer p{
+	display: inline;
+	padding:2%;
+}
+
+.filterTaskContainer a{
+
 }
 
 div.overlayPane{
@@ -52,11 +99,11 @@ div.overlayPane{
 	opacity: 0.5;
 }
 
-div.addTaskPane{
+div.addTaskPane{ /*make first text input autofocus*/
 	visibility: hidden;
     width: 300px;
     height: 200px;
-    line-height: 200px;
+    line-height: 50px;
     position: fixed;
     top: 50%; 
     left: 50%;

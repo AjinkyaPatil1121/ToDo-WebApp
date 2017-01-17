@@ -1,9 +1,11 @@
+<!--DOCTYPE html causing problems with formatting-->
 <html>
-
 	<head> 
+		<meta charset="UTF-8">
 		<title> ToDo me this Task! </title>
 		<link rel="stylesheet" type="text/css" href="../css/todo.css">
-		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	</head>
 
 	<body>
@@ -12,7 +14,7 @@
 			<div class="taskPage">
 				
 				<div class="titleWebApp">
-					<h1> To Do </h1>
+					<h1> To Do App</h1>
 				</div>
 				
 				<div class="titleWidgets">
@@ -20,13 +22,24 @@
 					<a href="#"><img src="../img/plus-icon-27951.png" height="30px" width="30px"></a>
 				</div>
 				<br/>
-				<input type="text" placeholder="Search">
+
+				<div id="searchBarContainer">
+					<input type="text" id="searchBar" placeholder="Search">
+				</div>
 
 				<div id="taskListView">
-					<ul id = "taskList">
+					<ul id = "taskList" class = "tasks list">
 
 
 					</ul>
+				</div>
+
+				<div class="filterTaskContainer">
+					<p id="viewAllTasks"><a id="allTasks" href="#"> View All
+					</a></p>
+					<p id="viewCompletedTasks"><a id="completedTasks" href="#"> Completed
+					</a></p>
+					<p id="viewPendingTasks"><a id="pendingTasks" href="#"> Pending</a></p>
 				</div>
 
 			</div>
@@ -34,17 +47,19 @@
 
 		<div class="overlayPane"></div>
 		<div class="addTaskPane">
-			<form id="addTaskForm" onsubmit="processForm()">
-				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task">
+			<form id="addTaskForm" method="POST">
+				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task" autofocus>
 				<br />
 				<input type="text" name="taskDesc" id="taskDesc" placeholder="Enter a description (optional)">
 				<br />
-				<input type="Submit" value="Add">
+				<input type="button" value="Add" onClick="processForm(this.value)">
+				<input type="button" value="Cancel" onClick="processForm(this.value)">
 			</form>
 		</div>	
 
 	</body>
 
 	<script type="text/javascript" src="../js/todo.js"></script>
+	<!-- -->
 
 </html>
