@@ -23,8 +23,11 @@
 				</div>
 				<br/>
 
-				<div id="searchBarContainer">
-					<input type="text" id="searchBar" placeholder="Search">
+				<div id="searchTextContainer">
+					<input type="text" id="searchTextField" placeholder="Search?">
+				</div>
+				<div id="searchButtonContainer">
+					<input type="button" id="searchButton" value="Search" onClick="processSearch()">
 				</div>
 
 				<div id="taskListView">
@@ -35,11 +38,15 @@
 				</div>
 
 				<div class="filterTaskContainer">
-					<p id="viewAllTasks"><a id="allTasks" href="#"> View All
-					</a></p>
-					<p id="viewCompletedTasks"><a id="completedTasks" href="#"> Completed
-					</a></p>
-					<p id="viewPendingTasks"><a id="pendingTasks" href="#"> Pending</a></p>
+					<div id="viewAllTasks">
+						<input type="button" id="viewAllButton" class="filterButtonActive" value="View All" onClick="filterButton(this.value)" />
+					</div>
+					<div id="viewCompletedTasks">
+						<input type="button" id="completedButton" value="Completed" onClick="filterButton(this.value)" />
+					</div>
+					<div id="viewPendingTasks">
+						<input type="button" id="pendingButton" value="Pending" onClick="filterButton(this.value)" />
+					</div>
 				</div>
 
 			</div>
@@ -48,11 +55,13 @@
 		<div class="overlayPane"></div>
 		<div class="addTaskPane">
 			<form id="addTaskForm" method="POST">
-				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task" autofocus>
+				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task max 15 chars" autofocus />
 				<br />
-				<input type="text" name="taskDesc" id="taskDesc" placeholder="Enter a description (optional)">
+				<!--input type="text" name="taskDesc" id="taskDesc" placeholder="Enter a description (optional)"-->
+				<div id="errorMsgCont"></div>
+				<textarea name="taskDesc" id="taskDesc" placeholder="Enter a description (optional) max 50 chars" maxlength="50"></textarea>
 				<br />
-				<input type="button" value="Add" onClick="processForm(this.value)">
+				<input type="submit" value="Add" onClick="processForm(this.value)">
 				<input type="button" value="Cancel" onClick="processForm(this.value)">
 			</form>
 		</div>	

@@ -27,7 +27,8 @@ div.taskPage {
 div.titleWebApp { /*TODO: Content fixed, no overflow*/
 	float: left;
 	height: 50px;
-	width: 50%;	
+	width: 80%;
+	overflow: hidden;
 }
 
 div.titleWebApp h1{
@@ -39,21 +40,46 @@ div.titleWebApp h1{
 div.titleWidgets{ /*TODO: decrease width for clickable area*/
 	float: left;
 	height: 50px;
-	width: 50%;
+	width: 20%;
 }
 
 div.titleWidgets a img{
-	padding-left: 70%;
+	/*padding-left: 70%;*/
 	margin-top: 8px;
 }
 
 /*TODO: search bar take up entire width*/
+div#searchTextContainer{
+	float: left;
+	width: 70%;
+}
+
+div#searchTextContainer input#searchTextField{
+	width: 100%;
+}
+
+div#searchButtonContainer{
+	float: left;
+	width: 30%;
+}
+
+div#searchButtonContainer input#searchButton{
+	width: 100%;
+}
 
 #taskListView{
 	border:1px solid;
 	height: 80%;
 	/*width: inherit;*/
+	width: 100%;
 	position: relative;
+	float: left; /*otherwise starts covering up the to do h1 title and search bar*/
+}
+
+#initialToDoMessage{
+	margin: 0 auto;
+	padding-top: 50%;
+	text-align: center;
 }
 
 #taskListView ul{
@@ -69,23 +95,55 @@ div.titleWidgets a img{
 	width: inherit;
 }
 
+#taskListView ul li.taskInactive {
+	border: 1px solid red;
+	opacity: 0.5;
+}
+
+p.listItemDesc{
+	/*width: 10%;
+	min-width: 5%;
+	height: 10%;
+	min-height: 2%;*/
+	width: 90%;
+	max-width: 90%;
+	min-width: 50%;
+	margin: 0px;
+	padding-left: 5px;
+	font-size: 12px;
+	font-style: italic;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow:ellipses;
+}
+
+
 .filterTaskContainer{
 	border:1px solid yellow;
 	height: 5%;
 	overflow: hidden;
 	position: relative;
-	text-align: justify;
+	margin: 0px;
+	padding: 0px;
+	/*text-align: justify;*/
 	/*width: inherit;*/
+	float: left; /*otherwise starts covering up the to do h1 title and search bar like task list ul */
 }
 
-.filterTaskContainer p{
+.filterTaskContainer div{
 	display: inline;
-	padding:2%;
+	margin: 0px;
+	padding: 0px;
 }
 
 .filterTaskContainer a{
 
 }
+
+.filterButtonActive{
+	background-color: green;
+}
+
 
 div.overlayPane{
 	visibility: hidden;
@@ -113,4 +171,32 @@ div.addTaskPane{ /*make first text input autofocus*/
     border-radius: 5px;
     text-align: center;
     z-index: 11; /* 1px higher than the overlay layer */
+}
+
+input#taskTitle{
+	margin: 5px;
+	margin-top: 10px;
+	padding: 5px;
+	width: 180px;
+	height: 25px;
+}
+
+div#errorMsgCont{
+	padding: 1px;
+	margin: 0px; 
+	height: 15px;
+	display: inline;
+	text-align: center;
+	font-size: 11px;
+	word-wrap: break-word;
+}
+
+p#errorMsgHolder{
+
+}
+
+textarea#taskDesc{
+	margin: 2px;
+	padding: 2px;
+	width: 180px;
 }
