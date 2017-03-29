@@ -1,40 +1,43 @@
-<!--DOCTYPE html causing problems with formatting-->
+<!DOCTYPE html>
 <html>
-	<head> 
-		<meta charset="UTF-8">
+	<head>
+		<meta charset="UTF-8" >
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title> ToDo me this Task! </title>
 		<link rel="stylesheet" type="text/css" href="../css/todo.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	</head>
 
 	<body>
+		<main>
 		<div class="mainPage">
 
 			<div class="taskPage">
 				
 				<div class="titleWebApp">
-					<h1> To Do App</h1>
+					<h1> ToDo App</h1>
 				</div>
 				
 				<div class="titleWidgets">
 					<!--input type="button" value="Filter"-->
-					<a href="#"><img src="../img/plus-icon-27951.png" height="30px" width="30px"></a>
+					<a href="#"><img src="../img/plus-icon-27951.png" height="30px" width="30px" alt="Click to add a task"></a>
 				</div>
 				<br/>
 
 				<div id="searchTextContainer">
-					<input type="text" id="searchTextField" placeholder="Search?">
+					<input type="text" id="searchTextField" placeholder="Search?" onkeyup="processSearch()">
 				</div>
-				<div id="searchButtonContainer">
+				<!--div id="searchButtonContainer">
 					<input type="button" id="searchButton" value="Search" onClick="processSearch()">
-				</div>
+				</div-->
 
-				<div id="taskListView">
-					<ul id = "taskList" class = "tasks list">
+				<div id="taskListViewWrapper">
+					<div id="taskListView"><!--ondrop="drop(event)" ondragover="allowDrop(event)"-->
+						<ul id = "taskList" class = "tasks list">
 
 
-					</ul>
+						</ul>
+					</div>
 				</div>
 
 				<div class="filterTaskContainer">
@@ -55,20 +58,23 @@
 		<div class="overlayPane"></div>
 		<div class="addTaskPane">
 			<form id="addTaskForm" method="POST">
-				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task max 15 chars" autofocus />
+				<input type="text" name="newTask" id="taskTitle" placeholder="Enter a task (max 20 chars)" onFocus="taskTextInput()" />
 				<br />
-				<!--input type="text" name="taskDesc" id="taskDesc" placeholder="Enter a description (optional)"-->
 				<div id="errorMsgCont"></div>
-				<textarea name="taskDesc" id="taskDesc" placeholder="Enter a description (optional) max 50 chars" maxlength="50"></textarea>
+				<textarea name="taskDesc" id="taskDesc" placeholder="Enter a description (optional)" ></textarea>
 				<br />
 				<input type="submit" value="Add" onClick="processForm(this.value)">
 				<input type="button" value="Cancel" onClick="processForm(this.value)">
 			</form>
 		</div>	
 
+		<!--:Experimental:NotImplemented:dialog id="searchNotFoundDialog">
+			<p id="searchResultMessage"></p>
+			<button id="hideSearchDialog">OK</button> 
+		</dialog-->
+	</main>
 	</body>
-
-	<script type="text/javascript" src="../js/todo.js"></script>
+	<script src="../js/todo.js"></script>
 	<!-- -->
 
 </html>

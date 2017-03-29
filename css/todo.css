@@ -1,46 +1,68 @@
+/*@media screen and (max-width: 400px) { 
+	.taskPage {
+		margin: 0px;
+		opacity: 1.0;
+	}
+}*/
+
 body {
 	margin: 0px;
 	padding: 0px;
-	background-color: pink;
+	background-color: #bde698; /*match the taskPage color*/
 	width: 100%;
 	height:100%;
 }
 
 div.mainPage {
-	padding: 2%;
+	/*padding: 2%;*/
 	margin: 0 auto;
-	width:100%;
+	width: 100%;
 	height: 100%;
 	position: absolute;
+	background-image: url("../img/ToDo background.jpg");
+	overflow: hidden;
 }
 
 div.taskPage {
 	margin: 0 auto;
 	padding: 0px;
-	height: 80%;
-	width: 35%;
-	background-color: skyblue;/*TODO: change to an image background*/
+	margin-top: 5vh; /*center viewport height*/
+	height: 510px;
+	width: 240px; /*want this to be fixed, no % */
+	/*min-width:35%; 
+	max-width:35%;*/
+	background-color: #8ddbfb;
 	position: relative;
-	/*TODO: add rounded border*/
+	border: 2px solid aliceblue;
+	border-radius: 5px;
+	box-shadow: -10px 12px 5px 2px rgba(74, 52, 52, 0.55);/*#4A444480*/
 }
 
-div.titleWebApp { /*TODO: Content fixed, no overflow*/
+div.titleWebApp { 
 	float: left;
 	height: 50px;
 	width: 80%;
 	overflow: hidden;
+	border-bottom: 1px solid;
 }
 
 div.titleWebApp h1{
 	float: left;
-	margin: 3px;
-	padding: 3px;
+	margin: 7px;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-weight: normal;
 }
 
-div.titleWidgets{ /*TODO: decrease width for clickable area*/
+div.titleWidgets{
 	float: left;
 	height: 50px;
-	width: 20%;
+	width: 18%;
+	border-left: 1px solid;
+	border-bottom: 1px solid;
+	display:inline;
+	text-align: center;
 }
 
 div.titleWidgets a img{
@@ -48,38 +70,55 @@ div.titleWidgets a img{
 	margin-top: 8px;
 }
 
-/*TODO: search bar take up entire width*/
 div#searchTextContainer{
 	float: left;
-	width: 70%;
+	width: 98%;
+	margin-left:1px; 
 }
 
 div#searchTextContainer input#searchTextField{
-	width: 100%;
+	width: 98%;
 }
 
-div#searchButtonContainer{
+/*div#searchButtonContainer{
 	float: left;
 	width: 30%;
-}
+	margin: -1px; /*-0.5 for Chrome?*/
+/*}
 
 div#searchButtonContainer input#searchButton{
 	width: 100%;
+}*/
+
+#taskListViewWrapper{
+	overflow: hidden;
+	height: 80.8%;
 }
 
 #taskListView{
-	border:1px solid;
-	height: 80%;
+	/*border:1px solid;*/
+	border-top: 1px solid;
+	/*border-bottom: 1px solid;*/
+	margin-left: 1px;
 	/*width: inherit;*/
-	width: 100%;
+	/*width: 100%;*/
+	width: 252.1px;/*for scrollbar invisibility, fixed width*/
 	position: relative;
+	overflow-y: scroll; /*customize? thinner? layout break? scroll w/o bars appearing*/
 	float: left; /*otherwise starts covering up the to do h1 title and search bar*/
+	height: 100%;
 }
 
 #initialToDoMessage{
-	margin: 0 auto;
-	padding-top: 50%;
+	margin-right: 10%;
+	margin-bottom: 10%;
+	margin-left: 10%;
+	margin-top: 45%;
+	padding: 10%;
 	text-align: center;
+	border: 2px solid red;
+	border-radius: 5px;
+	background-color: white;
 }
 
 #taskListView ul{
@@ -100,44 +139,73 @@ div#searchButtonContainer input#searchButton{
 	opacity: 0.5;
 }
 
-p.listItemDesc{
-	/*width: 10%;
-	min-width: 5%;
-	height: 10%;
-	min-height: 2%;*/
-	width: 90%;
-	max-width: 90%;
-	min-width: 50%;
+p.listItemDesc {
+	min-width: 95%;
+	min-height: 2%;
+	width: 95%; 
+	max-width: 95%;
 	margin: 0px;
 	padding-left: 5px;
 	font-size: 12px;
 	font-style: italic;
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow:ellipses;
+	text-overflow:ellipsis;
+}
+/*http://stackoverflow.com/questions/5474871/html-how-can-i-show-tooltip-only-when-ellipsis-is-activated?noredirect=1#*/
+
+/*space for done and del links*/
+ul#taskList li div.taskACont {
+	text-align: center;
 }
 
+ul#taskList li div.taskACont a {
+	text-decoration: none;
+	display: inline;
+	margin: 0px;
+}
 
-.filterTaskContainer{
-	border:1px solid yellow;
+ul#taskList li a.listItemDone {
+	padding-left: 10%;
+	padding-right: 10%; 
+	border: 1px solid violet;
+}
+
+ul#taskList li a.listItemNotDone {
+	padding-left: 5%;
+	padding-right: 5%;
+	border: 1px solid violet;
+}
+
+ul#taskList li a.listItemDel {
+	padding-left: 10%;
+	padding-right: 10%;
+	border: 1px solid violet;
+}
+
+.filterTaskContainer {
+	/*border:1px solid yellow;*/
+	display: inline;
+	text-align: center;
 	height: 5%;
 	overflow: hidden;
 	position: relative;
 	margin: 0px;
+	margin-left:0.5px; 
 	padding: 0px;
 	/*text-align: justify;*/
-	/*width: inherit;*/
+	width: inherit;
 	float: left; /*otherwise starts covering up the to do h1 title and search bar like task list ul */
 }
 
 .filterTaskContainer div{
 	display: inline;
-	margin: 0px;
+	margin: -3px;
 	padding: 0px;
 }
 
-.filterTaskContainer a{
-
+.filterTaskContainer div>input{
+	width: 33.6%;
 }
 
 .filterButtonActive{
@@ -157,11 +225,11 @@ div.overlayPane{
 	opacity: 0.5;
 }
 
-div.addTaskPane{ /*make first text input autofocus*/
+div.addTaskPane{ 
 	visibility: hidden;
     width: 300px;
     height: 200px;
-    line-height: 50px;
+    line-height: 30px;
     position: fixed;
     top: 50%; 
     left: 50%;
@@ -171,32 +239,60 @@ div.addTaskPane{ /*make first text input autofocus*/
     border-radius: 5px;
     text-align: center;
     z-index: 11; /* 1px higher than the overlay layer */
+    overflow: hidden;
 }
 
 input#taskTitle{
 	margin: 5px;
 	margin-top: 10px;
 	padding: 5px;
-	width: 180px;
-	height: 25px;
+	width: 218px;
+	/*height: 25px;*/
 }
 
 div#errorMsgCont{
 	padding: 1px;
 	margin: 0px; 
 	height: 15px;
+	width: 200px;
 	display: inline;
 	text-align: center;
-	font-size: 11px;
+	font-size: 12px;
 	word-wrap: break-word;
-}
-
-p#errorMsgHolder{
-
 }
 
 textarea#taskDesc{
 	margin: 2px;
-	padding: 2px;
-	width: 180px;
+	padding: 5px;
+	width: 218px;
 }
+
+#addTaskForm input[type=submit]{
+	min-width: 60px;
+	padding: 6px;
+}
+
+#addTaskForm input[type=button]{
+	min-width: 60px;
+	padding: 6px;
+}
+
+/*dialog{
+	width: 200px;
+    background-color: #f1c40f;
+}
+
+dialog::backdrop {
+	background-color: rgba(0,0,0,5);
+	opacity: 0.5;
+}*/
+
+
+/*
+@media screen and (min-width: 401px) and (max-width: 599px) {
+	body { background-color: green; }
+}
+@media screen and (min-width: 600px){
+	body { background-color: blue; }
+}
+*/

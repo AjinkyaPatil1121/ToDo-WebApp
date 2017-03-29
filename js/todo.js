@@ -8,12 +8,19 @@ $(document).ready(function() {
     	// clear the initial message from taskList
     	if ( document.getElementById("taskList").firstChild === document.getElementById("initialToDoMessage") )
     	{
-    		//console.log("firstchild == p");
     		document.getElementById("initialToDoMessage").remove();
     	}
  	  	// change visibility of div Task pane and overlay
  	  	turnTaskOverlayPane("visible");
+ 	  	// set focus to task text field
+ 	  	document.getElementById("taskTitle").focus();
     });
+
+	// scrolling task list without scrollbar visible
+	//get taskListView div scroll width without scrollbar
+	var taskListViewWidth = document.getElementById("taskListView").scrollWidth; // needs width set in px
+	// set the container wrapper div of div taskListView to cover the scrollbars
+	document.getElementById("taskListViewWrapper").style.width = taskListViewWidth + "px";
 
     document.getElementById("searchTextField").value = "";
     // on reload mark active tab to be VA and call its filterB.refreshView
@@ -47,17 +54,25 @@ function loadToDo()
 	// display list if exists
 	if (sessionStorage.getItem("theTaskList") && sessionStorage.getItem("theTaskList").trim() !== "")
 	{
-		//document.getElementById("taskListView").innerHTML = null;
-		//console.log(sessionStorage.getItem("theTaskList"));
-		//console.log("not inside");
-		//console.log("inside loadToDo if");
-		//console.log(sessionStorage.getItem("theTaskList"));
 		document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+
+		// list exists but tabbed lists might be empty
+		var activeFilter = ( ( $('#viewAllButton').hasClass('filterButtonActive') ) ? $('#viewAllButton').attr('value')
+								: ( $('#completedButton').hasClass('filterButtonActive') ) ? $('#completedButton').attr('value')
+								: ( $('#pendingButton').attr('value') ) );
+		
+		// checking all elements are hidden!
+		if (activeFilter == "Pending" && $("#taskList").children(":visible").length === 0)
+		{
+			document.getElementById("taskList").innerHTML = "<p id='initialToDoMessage'> No active tasks to display! Looks like someones' working hard... </p>";	
+		}
+		else if (activeFilter == "Completed" && $("#taskList").children(":visible").length === 0){
+			document.getElementById("taskList").innerHTML = "<p id='initialToDoMessage'> Nothing here! Looks like you're not working hard... Up and at 'em! </p>";	
+		}
 	}
 	//otherwise, prompt to add stuff
 	else
 	{
-		//console.log("inside loadToDo else");
 		document.getElementById("taskList").innerHTML = "<p id='initialToDoMessage'> Hello! Please add new tasks from the + above </p>";
 	}
 }
@@ -77,29 +92,58 @@ $(".overlayPane").click(function(){
 // On task (li) mouseover display remove, details, done anchors
 $('#taskList').on('mouseover','li',function(){
 	var $allAnchor = $(this).find('a');
-	$allAnchor.css('display','block');
+	$allAnchor.css('display','inline');
 });
-
 
 $('#taskList').on('mouseout','li',function(){
 	var $allAnchor = $(this).find('a');
 	$allAnchor.css('display','none');
 });
 
+// list done, not done, del hover/mouseover handling
+$('#taskList').on('mouseover','.listItemDone',function(){
+	$(this).text("DONE?");
+	// adds a "space" artifact that separates the boxes for DONE and DEL
+});
+$('#taskList').on('mouseout','.listItemDone',function(){
+	$(this).text("DONE");	
+});
+
+$('#taskList').on('mouseover','.listItemNotDone',function(){
+	$(this).text("NOT DONE?");
+});
+$('#taskList').on('mouseout','.listItemNotDone',function(){
+	$(this).text("NOT DONE");	
+});
+
+$('#taskList').on('mouseover','.listItemDel',function(){
+	$(this).text("DEL?");
+});
+$('#taskList').on('mouseout','.listItemDel',function(){
+	$(this).text("DEL");	
+});
+
 // List Item done click handler
 $('#taskList').on('click','.listItemDone',function(e){
 	e.preventDefault();
 
-	var taskText = $(this).parent().find("span").text();
+	var taskText = ($(this).parent()).parent().find("span").text(); // a->div->li
 
-	$(this).parent().remove();
+	($(this).parent()).parent().remove();
+
+// to reflect the parent being marked done
+	//if (document.getElementById("taskList").firstChild !== document.getElementById("initialToDoMessage"))
+	//{ // when adding items, initial message gets removed; when one elem->done->remove->blank->session gets blank by this statement->inner set to blank->create->add to inner->update session
+		// hence safe call without this if, cant get initialMessage added to session
+		// can also place this inside mark done event handler
+		sessionStorage.setItem("theTaskList", document.getElementById("taskList").innerHTML);
+	//}
+
 	// call refreshView with task title, task status and what tab is active
-	
 	var activeFilter = ( ( $('#viewAllButton').hasClass('filterButtonActive') ) ? $('#viewAllButton').attr('value')
 							: ( $('#completedButton').hasClass('filterButtonActive') ) ? $('#completedButton').attr('value')
 							: ( $('#pendingButton').attr('value') ) );
 						
-	//console.log(activeFilter);
 	// task was set to done, refreshView with 'taskTitle' to be marked 'done' at this 'tab'
 	refreshView (taskText, "done", activeFilter);
 });
@@ -108,17 +152,25 @@ $('#taskList').on('click','.listItemDone',function(e){
 $('#taskList').on('click','.listItemNotDone',function(e){
 	e.preventDefault();
 
-	var taskText = $(this).parent().find("span").text();
+	var taskText = ($(this).parent()).parent().find("span").text();
 
-	$(this).parent().remove();
+	($(this).parent()).parent().remove();
+	
+	// to reflect the parent being marked not done
+	//if (document.getElementById("taskList").firstChild !== document.getElementById("initialToDoMessage"))
+	//{ // when adding items, initial message gets removed; when one elem->done->remove->blank->session gets blank by this statement->inner set to blank->create->add to inner->update session
+		// hence safe call without this if, cant get initialMessage added to session
+		// can also place this inside mark done event handler
+		sessionStorage.setItem("theTaskList", document.getElementById("taskList").innerHTML);
+	//}
+
 	// call refreshView with task title, task status and what tab is active
 	
 	var activeFilter = ( ( $('#viewAllButton').hasClass('filterButtonActive') ) ? $('#viewAllButton').attr('value')
 							: ( $('#completedButton').hasClass('filterButtonActive') ) ? $('#completedButton').attr('value')
 							: ( $('#pendingButton').attr('value') ) );
 						
-	//console.log(activeFilter);
-	// task was set to done, refreshView with 'taskTitle' to be marked 'done' at this 'tab'
+	// task was set to done, refreshView with 'taskTitle' to be marked 'not done' at this 'tab'
 	refreshView (taskText, "new", activeFilter);
 });
 
@@ -127,33 +179,158 @@ $('#taskList').on('click','.listItemDel',function(e){
 	e.preventDefault();
 		
 	// remove item from localStorage too
-	//console.log($(this).parent().find("span").text());
-	sessionStorage.removeItem($(this).parent().find("span").text());
+
+	// this removes all duplicate tasks from session, either block in processForm()-Done! when adding task
+	// or handle code for duplicate values
+	sessionStorage.removeItem(($(this).parent()).parent().find("span").text());
 
 	// remove the li in the UI
-	$(this).parent().remove();
+	($(this).parent()).parent().remove();
 
 	// set the ul taskList in session to be whatever is left after removing li
 	sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
 
-	loadToDo();// for when all items have been deleted, show the initial message in p
+	//loadToDo();// for when all items have been deleted, show the initial message in p -> delegated to refreshView which is also a logical step
+	var activeFilter = ( ( $('#viewAllButton').hasClass('filterButtonActive') ) ? $('#viewAllButton').attr('value')
+							: ( $('#completedButton').hasClass('filterButtonActive') ) ? $('#completedButton').attr('value')
+							: ( $('#pendingButton').attr('value') ) ); 
+
+	refreshView (null,null,activeFilter);
 });
 
-// search text field event handler
+/*Future: $('#hideSearchDialog').click(function(){
+	document.getElementById("searchNotFoundDialog").close();
+});*/
 
+/*Future: clickable ellipsis tooltip with a pop out display*/
+// For displaying the entire long task desc. enclosed behind ellipsis
+$(document).on('mouseenter', '.listItemDesc', function(){ 
+	var $t = $(this); 
+	var title = $t.attr('title'); 
+	if (!title) 
+	{ 
+		if (this.offsetWidth < this.scrollWidth) 
+			$t.attr('title', $t.text());
+	} 
+	else
+	{
+		if (this.offsetWidth >= this.scrollWidth && title == $t.text()) 
+			$t.removeAttr('title');
+	}
+});
+
+
+// task input text field is focused/selected
+function taskTextInput(){
+	// If error was displayed and user is focusing/clicking on textfield input to take corrective action
+	if (document.getElementById("errorMsgCont").innerText !== ""){
+		document.getElementById("errorMsgCont").innerText = "";
+		document.getElementById("taskTitle").value = "";
+	}
+}
+
+//Future: onkeyup works with input char by char, and not completely when typed with speed
+// also maybe because I setup the algorithm for working on char by char input
+// add more handlers(onchange,etc..) or change code here to handle possible different behaviors(typing fast, etc.)
+var stringsToSearch = [];
+
+// search text field event handler
 function processSearch()
 {
+	// fetch current task items from storage
+	document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+
 	var taskToSearch = document.getElementById("searchTextField").value;
-	//console.log(taskToSearch);
+
 	var listItems = document.getElementById("taskList").childNodes;
 
+	// if all characters removed from search box
+	if (taskToSearch === "" || taskToSearch.length === 0)
+	{
+		// make blank
+		stringsToSearch = [];
+
+		// refresh the view
+		var activeFilter = ( ( $('#viewAllButton').hasClass('filterButtonActive') ) ? $('#viewAllButton').attr('value')
+							: ( $('#completedButton').hasClass('filterButtonActive') ) ? $('#completedButton').attr('value')
+							: ( $('#pendingButton').attr('value') ) );
+
+		refreshView (null,null,activeFilter);
+	}
+	// if one character entered, find and display all task items starting with that character
+	else if (taskToSearch.length === 1 && listItems.length > 0) {
+		for (var i = 0; i < listItems.length; i++)
+		{
+			if (listItems[i].childNodes[0].innerText[0].toLowerCase() === taskToSearch[0].toLowerCase()){
+				
+				stringsToSearch.push(listItems[i].childNodes[0].innerText);
+				listItems[i].removeAttribute("hidden");
+			}
+			else{
+				listItems[i].setAttribute("hidden","true");
+			}
+		}
+		
+		// save whatever changes you made to view
+		sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+		document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+	}
+	// match the next entries in search box to task items put in stringsToSearch and display results
+	else if (taskToSearch.length > 1 && listItems.length > 0){
+	/*
+		// for people typing fast :Future task
+		for (var i = 0; i < listItems.length; i++)
+		{
+			if (listItems[i].childNodes[0].innerText[0] === taskToSearch[0]){
+				//console.log(listItems[i]);
+				stringsToSearch.push(listItems[i].childNodes[0].innerText);
+				//console.log(stringsToSearch);
+				listItems[i].removeAttribute("hidden");
+			}
+			else{
+				listItems[i].setAttribute("hidden","true");
+			}
+		}
+		
+		// save whatever changes you made to view
+		sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+		document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+	*/
+		for (var i = 0; i < listItems.length; i++)
+		{
+			if (stringsToSearch.includes(listItems[i].childNodes[0].innerText)) // currently displayed list items
+			{
+				if (listItems[i].childNodes[0].innerText.length < taskToSearch.length)
+				{
+					listItems[i].setAttribute('hidden','true');
+				}
+				else if (listItems[i].childNodes[0].innerText[taskToSearch.length-1].toLowerCase() === taskToSearch[taskToSearch.length-1].toLowerCase()){
+					listItems[i].removeAttribute("hidden");
+				}
+				else{
+					listItems[i].setAttribute("hidden","true");
+				}
+			}
+			else{
+				listItems[i].setAttribute("hidden","true");	
+			}
+		}
+		// save whatever changes you made to view
+		sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+		document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+	}
+
+/*	Old working algorithm
 	// search session storage for taskToSearch string
-	// if exists 
+		// if exists 
 		// hide all other elements
+
 	if (sessionStorage.getItem(taskToSearch) && taskToSearch !== "")
 	{
+		//console.log("inside the if");
 		if (listItems.length !== 0)
-		{				
+		{		
+			//console.log("inside the 2nd if");		
 			//console.log(listItems);
 			//console.log(listItems[0].childNodes[0].innerText); // got from firefox console
 			for (var i = 0; i < listItems.length; i++)
@@ -170,24 +347,37 @@ function processSearch()
 			}
 		}
 	}
+*/
 	// otherwise
 		// alert no such element
-	else
+/*	else
 	{
-		alert("No such task found!");
+		alert("No task named '"+taskToSearch+"' found!"); // replace with html dialog
+/*		var dialog = document.getElementById("searchNotFoundDialog");
+		var searchMsg = document.getElementById("searchResultMessage");
+		searchMsg.innerText = 'Cannot find task "'+taskToSearch+'" in the ToDo list';
+		dialog.showModal();
+		//document.getElementById("hideSearchDialog").onclick = function(){dialog.close();};
+*/		
+/*		document.getElementById("searchTextField").value = "";
+		var activeFilter = ( ( $('#viewAllButton').hasClass('filterButtonActive') ) ? $('#viewAllButton').attr('value')
+							: ( $('#completedButton').hasClass('filterButtonActive') ) ? $('#completedButton').attr('value')
+							: ( $('#pendingButton').attr('value') ) );
+							
+		refreshView (null, null, activeFilter);
 	}
+*/
 
-}
+} // Search process handler ends
 
-
+// Adding a task element from task input form
 function processForm(submitType)
 {	
-	//console.log(submitType);
-	
 	if (submitType == "Cancel")
 	{
 		// change overlay visibility off
 		turnTaskOverlayPane("hidden");
+		document.getElementById("errorMsgCont").innerText = "";
 		loadToDo();
 	}
 	else
@@ -195,13 +385,19 @@ function processForm(submitType)
 		// get form elements for new task entry
 		var elTaskTitle = document.getElementById("taskTitle");
 		var elTaskDesc = document.getElementById("taskDesc");
-
+		
 		// input validation and handling
 		// for blank
-		if (elTaskTitle.value.trim() === "" || elTaskTitle.value.length > 15)
+		// for duplicate entries, when del a task, session.remove removes all duplicates
+		if (elTaskTitle.value.trim() === "" || elTaskTitle.value.length > 20)
 		{
-			var errorText = "Task title cannot be blank and exceed 15 chars";
+			var errorText = "Task title cannot be blank and exceed 20 chars";
 			document.getElementById("errorMsgCont").innerText = errorText;
+		}
+		else if (sessionStorage.getItem(elTaskTitle.value))
+		{
+			var errorText = "Similar task already exists, choose a new name";
+			document.getElementById("errorMsgCont").innerText = errorText;	
 		}
 		else
 		{
@@ -213,7 +409,7 @@ function processForm(submitType)
 			var taskObj = new taskObject(elTaskTitle.value,elTaskDesc.value,new Date(),"new");
 
 			// put the elements in local storage
-			// save individual element per task -> object
+			// save individual element per task name -> object
 			sessionStorage.setItem(taskObj.title,JSON.stringify(taskObj)); // key = task title, value = task object
 
 			//console.log(JSON.parse(sessionStorage.getItem(taskObj.title)));
@@ -228,37 +424,60 @@ function processForm(submitType)
 		}
 	}
 }
+/*
+Future Feature: would need to add IDs to ListItems since typeof data that gets passed 
+around is string
+function allowDrop(ev) 
+{
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "move";
+}
+
+function drag(ev) 
+{
+    ev.dataTransfer.setData("text/html", ev.target); // string representation, so text/html becomes "object HTMLLIItem"
+    ev.dataTransfer.dropEffect = "move";
+    //console.log("EV target ID=="+ev.target+"<this");
+}
+
+function drop(ev)
+{
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text/html");
+    console.log(data);
+    console.log(typeof data); // string
+    console.log("target drop point id UL="+ev.target+"<-this");
+    document.getElementById("taskList").insertBefore(data,document.getElementById("taskList").childNodes[0]);
+    // search for dragging within same element
+}
+*/
 
 function createActiveTaskItem(taskObject)
 {
-		var listItem = document.createElement("li");
-		listItem.className = "taskActive";
+	var listItem = document.createElement("li");
+	listItem.className = "taskActive";
+	//listItem.setAttribute("draggable","true");
+	//listItem.setAttribute("ondragstart","drag(event)");
 
-		listItem.innerHTML = '<span>'+taskObject.title+'</span>' + '<p class="listItemDesc">'+ taskObject.desc +'</p>' 
-		+ ' <a class="listItemDone" style="display: none;" href="#"> DONE </a> '
-		+ ' <a class="listItemDel" style="display: none;" href="#"> X </a>';
-		//var listItem = '<li><span class="drag"> : </span><input class="listItem" value=' + taskObj.title + '><a class="listItemDetail" style="display: none;" href="#"> MORE </a><a class="listItemDone" style="display: none;" href="#"> DONE </a><a class="listItemDel" style="display: none;" href="#"> X </a></li>';
+	listItem.innerHTML = '<span>'+taskObject.title+'</span>' + '<p class="listItemDesc">'+ taskObject.desc +'</p>' 
+	+ ' <div class="taskACont"> <a class="listItemDone" style="display: none;" href="#"> DONE </a> '
+	+ ' <a class="listItemDel" style="display: none;" href="#"> DEL </a> </div>';
+	//var listItem = '<li><span class="drag"> : </span><input class="listItem" value=' + taskObj.title + '><a class="listItemDetail" style="display: none;" href="#"> MORE </a><a class="listItemDone" style="display: none;" href="#"> DONE </a><a class="listItemDel" style="display: none;" href="#"> X </a></li>';
 
-		//var firstTaskLi = document.getElementById("taskList").firstChild;
-		//var taskList = document.getElementById("taskList");
-		//taskList.insertBefore()
-		document.getElementById("taskList").insertBefore(listItem,document.getElementById("taskList").childNodes[0]);
+	//var firstTaskLi = document.getElementById("taskList").firstChild;
+	//var taskList = document.getElementById("taskList");
+	//taskList.insertBefore()
 
-		// save entire list with key theTaskList, overwriting for all new entries with same name
-		// saves iterating the storage on refresh. Saves all task li's
-		sessionStorage.setItem("theTaskList", document.getElementById("taskList").innerHTML);		
+	// get updated list from session
+	// because of initial p messages displayed for usability
+	document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
 
-		//console.log(sessionStorage.getItem("theTaskList"));
+	// make relevant changes to the list just obtained
+	document.getElementById("taskList").insertBefore(listItem,document.getElementById("taskList").childNodes[0]);
 
-		// append a task list node to the div taskListView ul element
-
-		//var liNode = document.createElement("li");
-		//var textNode = document.createTextNode(task1.title);
-		//var textNode = document.createTextNode(task.title);
-
-		//liNode.appendChild(textNode);
-
-		//document.getElementById("taskList").appendChild(liNode);
+	// save entire list with key theTaskList, overwriting for all new entries with same name
+	// saves iterating the storage on refresh. Saves all task li's
+	sessionStorage.setItem("theTaskList", document.getElementById("taskList").innerHTML);
 }
 
 function createInactiveTaskItem(taskObject)
@@ -267,10 +486,12 @@ function createInactiveTaskItem(taskObject)
 	var listItem = document.createElement("li");
 	listItem.className = "taskInactive";
 
-	listItem.innerHTML = '<span>'+taskObject.title+'</span>' + '<p class="listItemDesc">'+ taskObject.desc +'</p>' +
-		' <a class="listItemNotDone" style="display: none;" href="#"> NOT DONE </a> '+
-		' <a class="listItemDel" style="display: none;" href="#"> X </a> ' ;
-		
+	listItem.innerHTML = '<span>'+taskObject.title+'</span>' + '<p class="listItemDesc">'+ taskObject.desc +'</p>' 
+	+ ' <div class="taskACont"><a class="listItemNotDone" style="display: none;" href="#"> NOT DONE </a> '
+	+ ' <a class="listItemDel" style="display: none;" href="#"> DEL </a> </div>' ;
+	
+	document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+
 	// append inactive to the end
 	document.getElementById("taskList").appendChild(listItem);
 
@@ -280,6 +501,12 @@ function createInactiveTaskItem(taskObject)
 
 function refreshView (taskTitle,taskStatus,filterTab)
 {
+/*	if (sessionStorage.getItem("theTaskList") && sessionStorage.getItem("theTaskList").trim() !== "") // if exists
+	{
+		document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
+	}
+	else{ loadToDo(); return;}
+*/
 	switch (filterTab)
 	{
 		case "View All":
@@ -289,20 +516,15 @@ function refreshView (taskTitle,taskStatus,filterTab)
 				// for page reload need to get this info from session, since reload removes all list items
 				if (sessionStorage.getItem("theTaskList") && sessionStorage.getItem("theTaskList").trim() !== "") // if exists
 				{
-
 					document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
 
 					var activeTaskListItems = document.getElementsByClassName("taskActive");
 					var inactiveTaskListItems = document.getElementsByClassName("taskInactive");
 
-					//console.log(activeTaskListItems);
-					//console.log(inactiveTaskListItems);
-
 					if (activeTaskListItems.length !== 0)
 					{
 						for (var i = 0; i < activeTaskListItems.length; i++)
 						{
-							//activeTaskListItems[i].setAttribute("hidden","false");
 							activeTaskListItems[i].removeAttribute("hidden");
 						}
 
@@ -311,12 +533,9 @@ function refreshView (taskTitle,taskStatus,filterTab)
 					{
 						for (var i = 0; i < inactiveTaskListItems.length; i++)
 						{
-							//inactiveTaskListItems[i].setAttribute("hidden","false");
 							inactiveTaskListItems[i].removeAttribute("hidden");
 						}
 					}
-
-					//console.log(document.getElementById("taskList").innerHTML);
 					
 					/*if (sessionStorage.getItem("theTaskList") && sessionStorage.getItem("theTaskList").trim() !== "") // if exists
 					{*/
@@ -330,11 +549,11 @@ function refreshView (taskTitle,taskStatus,filterTab)
 			}
 			else
 			{
+				// ViewAll tab has task items being marked done
 				if (taskStatus === "done")
 				{
 					// find the task object and set status to done
 					var taskObj = JSON.parse(sessionStorage.getItem(taskTitle));
-					//console.log(taskObj);
 					taskObj.status = "done";
 
 					// remove the "new" li from ul taskList UI
@@ -343,7 +562,7 @@ function refreshView (taskTitle,taskStatus,filterTab)
 					createInactiveTaskItem(taskObj); // delegated to separate function
 
 				}
-				else // for task status new - being marked as not done
+				else // for task status new - being marked as not done in VA tab
 				{
 					// find the task object and set status to new
 					var taskObj = JSON.parse(sessionStorage.getItem(taskTitle));
@@ -364,11 +583,10 @@ function refreshView (taskTitle,taskStatus,filterTab)
 		{
 			if (taskStatus === null && taskTitle === null)
 			{
+				document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
 				// get list from ul taskList
 				var activeTaskListItems = document.getElementsByClassName("taskActive");
 				var inactiveTaskListItems = document.getElementsByClassName("taskInactive");
-				//console.log(activeTaskListItems);
-				//console.log(activeTaskListItems.length);
 
 				// for each element
 					// if list item has class taskActive, then hide
@@ -384,16 +602,16 @@ function refreshView (taskTitle,taskStatus,filterTab)
 				{
 					for (var i = 0; i < inactiveTaskListItems.length; i++)
 					{
-						//inactiveTaskListItems[i].setAttribute("hidden","false");
 						inactiveTaskListItems[i].removeAttribute("hidden");
 					}
 				}
 
-				//console.log("nullnullCompleted=="+document.getElementById("taskList").innerHTML);
 				// set the ul task list in sessionStorage
-				sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+				//if (document.getElementById("taskList").firstChild !== document.getElementById("initialToDoMessage")){
+					sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+				//} not necessary since document.inner=.. is the first line
 
-				// then load the To Do
+				// then load the To Do (after making changes and saving to session)
 				loadToDo();
 			}
 			else
@@ -402,7 +620,6 @@ function refreshView (taskTitle,taskStatus,filterTab)
 				{
 					// find the task object and set status to done
 					var taskObj = JSON.parse(sessionStorage.getItem(taskTitle));
-					//console.log(taskObj);
 					taskObj.status = "new";
 
 					// remove the "new" li from ul taskList UI
@@ -412,16 +629,12 @@ function refreshView (taskTitle,taskStatus,filterTab)
 
 					refreshView(null,null,"Completed");
 
-					// TODOinTODO-clicking plus to add more - DONE
-					// TODOinTODO-switching to either tabs - DONE
-
 				}
 				// no such "done" case for completed tab: Special case for when searching and active tab is completed
 				else 
 				{
 					// find the task object and set status to done
 					var taskObj = JSON.parse(sessionStorage.getItem(taskTitle));
-					//console.log(taskObj);
 					taskObj.status = "done";
 
 					createInactiveTaskItem(taskObj);
@@ -436,11 +649,10 @@ function refreshView (taskTitle,taskStatus,filterTab)
 		{
 			if (taskStatus === null && taskTitle === null)
 			{
+				document.getElementById("taskList").innerHTML = sessionStorage.getItem("theTaskList");
 				// get list from ul taskList
 				var inactiveTaskListItems = document.getElementsByClassName("taskInactive");
 				var activeTaskListItems = document.getElementsByClassName("taskActive");
-				//console.log(inactiveTaskListItems);
-				//console.log(inactiveTaskListItems.length);
 
 				// for each element
 					// if list item has class taskinActive, then hide
@@ -459,9 +671,11 @@ function refreshView (taskTitle,taskStatus,filterTab)
 						activeTaskListItems[i].removeAttribute("hidden");
 					}
 				}
-				//console.log("nullnullActive=="+document.getElementById("taskList").innerHTML);
+
 				// set the ul task list in sessionStorage
-				sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+				//if (document.getElementById("taskList").firstChild !== document.getElementById("initialToDoMessage")){
+					sessionStorage.setItem("theTaskList",document.getElementById("taskList").innerHTML);
+				//}
 
 				// then load the To-Do
 				loadToDo();
@@ -472,7 +686,6 @@ function refreshView (taskTitle,taskStatus,filterTab)
 				{
 					// find the task object and set status to done
 					var taskObj = JSON.parse(sessionStorage.getItem(taskTitle));
-					//console.log(taskObj);
 					taskObj.status = "done";
 
 					createInactiveTaskItem(taskObj);
@@ -484,16 +697,14 @@ function refreshView (taskTitle,taskStatus,filterTab)
 				{
 					// find the task object and set status to done
 					var taskObj = JSON.parse(sessionStorage.getItem(taskTitle));
-					//console.log(taskObj);
 					taskObj.status = "new";
 
 					createActiveTaskItem(taskObj);
 
-					refreshView(null,null,"Pending");				
-
+					refreshView(null,null,"Pending");
 				}
 			}
-
+			
 			break;
 		}
 	}
