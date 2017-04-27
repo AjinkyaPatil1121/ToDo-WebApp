@@ -1,9 +1,20 @@
-/*@media screen and (max-width: 400px) { 
-	.taskPage {
-		margin: 0px;
-		opacity: 1.0;
+@media screen and (max-width: 400px) { 
+	div.taskPage {
+		height: 430px;
 	}
-}*/
+	div#taskListViewWrapper {
+		height: 77.3%;
+	}
+}
+
+@media screen and (min-width: 401px) { 
+	div.taskPage {
+		height: 510px;
+	}
+	div#taskListViewWrapper {
+		height: 80.8%;
+	}
+}
 
 body {
 	margin: 0px;
@@ -27,7 +38,7 @@ div.taskPage {
 	margin: 0 auto;
 	padding: 0px;
 	margin-top: 5vh; /*center viewport height*/
-	height: 510px;
+	/*height: 510px;*/
 	width: 240px; /*want this to be fixed, no % */
 	/*min-width:35%; 
 	max-width:35%;*/
@@ -92,7 +103,7 @@ div#searchButtonContainer input#searchButton{
 
 #taskListViewWrapper{
 	overflow: hidden;
-	height: 80.8%;
+	/*height: 80.8%;*/
 }
 
 #taskListView{

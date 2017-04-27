@@ -378,7 +378,7 @@ function processForm(submitType)
 		// change overlay visibility off
 		turnTaskOverlayPane("hidden");
 		document.getElementById("errorMsgCont").innerText = "";
-		loadToDo();
+		loadToDo(); // After Git commit check found: should be a call to refreshView
 	}
 	else
 	{
